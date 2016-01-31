@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
+
+//蓋寫掉Request
 class PostRequest extends Request
 {
     /**
@@ -13,7 +15,7 @@ class PostRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return  true;
     }
 
     /**
@@ -24,7 +26,9 @@ class PostRequest extends Request
     public function rules()
     {
         return [
-            //
+            'title'=>'required',
+            'sub_title'=>'required',
+            'content'=>'required'
         ];
     }
 }

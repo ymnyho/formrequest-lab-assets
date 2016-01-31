@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Http\Requests;
+use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 
 class PostsController extends Controller
@@ -51,7 +52,7 @@ class PostsController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $post = \App\Post::create($request->all());
         $data = compact('post');
@@ -65,11 +66,35 @@ class PostsController extends Controller
         //old
         //return redirect()->route('posts.show', $post->id);
     }
+/*ok
+    public function store(Request $request)
+    {
+        $post = \App\Post::create($request->all());
+        $data = compact('post');
+        
+
+        //v1,ok
+        //return redirect()->route('posts.create');
+        //v2,ok
+        return redirect()->route('posts.show',$data);
+
+        //old
+        //return redirect()->route('posts.show', $post->id);
+    }*/
 
     public function show($id)
     {
         $post = \App\Post::find($id);
 
+        //ok,abort錯誤訊息
+        if(is_null($post))
+            abort(404); //導到file \resources\views\errors\503
+
+        /*ok,redirect自定錯誤提示頁面
+        if(is_null($post))
+            return redirect()->route('posts.index')->with('message','找不到此頁面');
+        */
+        
         $post->page_view += 1;
         $post->save();
 

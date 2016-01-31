@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Post;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -13,10 +13,12 @@ class PostsController extends Controller
     {
         $postType = '文章總覽';
 
-        $posts = \App\Post::orderBy('created_at', 'desc')
+        $posts = Post::orderBy('updated_at','ASC')->paginate(5);
+        $data = compact('postType','posts');
+        /*$posts = \App\Post::orderBy('created_at', 'desc')
                           ->paginate(5);
 
-        $data = compact('postType', 'posts');
+        $data = compact('postType', 'posts');*/
 
         return view('posts.index', $data);
     }
@@ -52,8 +54,16 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         $post = \App\Post::create($request->all());
+        $data = compact('post');
+        
 
-        return redirect()->route('posts.show', $post->id);
+        //v1,ok
+        //return redirect()->route('posts.create');
+        //v2,ok
+        return redirect()->route('posts.show',$data);
+
+        //old
+        //return redirect()->route('posts.show', $post->id);
     }
 
     public function show($id)
@@ -79,23 +89,36 @@ class PostsController extends Controller
 
     public function update($id, Request $request)
     {
-        $post = \App\Post::find($id);
-        $post->update($request->all());
-
-        return redirect()->route('posts.show', $post->id);
+        $post = Post::find($id);        
+        $post->update($request->except('_token'));
+        return redirect()->route('posts.edit',$post->id);
+               
+        //old//$post->update($request->all());
+        //old//        return redirect()->route('posts.show', $post->id);
     }
 
     public function destroy($id)
     {
-        $post = \App\Post::find($id);
+        
+        Post::destroy($id);
+        return redirect()->route('posts.index');
 
+
+        /*
+        v2,ok
+        $post = Post::find($id);
+        $post->delete();
+        v1,ok
+        Post::destroy($id);*/
+
+        /*$post = \App\Post::find($id);
         foreach($post->comments as $comment) {
             $comment->delete();
         }
 
         $post->delete();
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index');*/
     }
 
     public function comment($id, Request $request)

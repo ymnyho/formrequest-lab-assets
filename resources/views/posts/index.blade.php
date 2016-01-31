@@ -32,13 +32,15 @@
             <div class="post-preview">
                 <a href="{{ route('posts.show', $post->id) }}">
                     <h2 class="post-title">
-                        {{ $post->title }}
+                        {{ $post->id }} - {{ $post->title }}
                     </h2>
                     <h3 class="post-subtitle">
                         {{ $post->sub_title }}
                     </h3>
                 </a>
-                <p class="post-meta">由 <a href="#">Start Bootstrap</a> 發表於 {{ $post->created_at->toDateString() }}</p>
+                <p class="post-meta">由 <a href="#">Start Bootstrap</a> 發表於 {{ $post->updated_at->diffForHumans() }}</p>
+                <!-- old
+                <p class="post-meta">由 <a href="#">Start Bootstrap</a> 發表於 {{ $post->created_at->toDateString() }}</p> -->
             </div>
             <hr>
             @endforeach
@@ -46,6 +48,7 @@
             <!-- Pager -->
             <nav class="text-center">
                 {!! $posts->render() !!}
+                <!--old {!! $posts->render() !!} -->
             </nav>
         </div>
     </div>
